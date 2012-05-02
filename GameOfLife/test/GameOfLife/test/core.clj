@@ -43,3 +43,15 @@
 
 (deftest evolve-square
   (is (= #{[0 0][0 1][1 0][1 1]} (evolve #{[0 0][0 1][1 0][1 1]}))))
+
+(deftest evolve-tri
+  (is (= #{[1 0][1 1][1 2]} (evolve #{[0 1][1 1][2 1]}))))
+
+(deftest evolve-tri-three-times
+  (is (= #{[1 0][1 1][1 2]} (evolve (evolve (evolve #{[0 1][1 1][2 1]}))))))
+
+(deftest evolve-tri-three-times-advanced
+  (is (= [#{[0 1][1 1][2 1]}
+	  #{[1 0][1 1][1 2]}
+	  #{[0 1][1 1][2 1]}]
+	   (take 3 (iterate evolve #{[0 1][1 1][2 1]})))))
