@@ -2,5 +2,5 @@
   (:use [GameOfLife.core])
   (:use [clojure.test]))
 
-(deftest replace-me ;; FIXME: write
-  (is false "No tests have been written."))
+(deftest count-neighbours
+  (is (= 0 (neighbours #{} [1 1]))))
