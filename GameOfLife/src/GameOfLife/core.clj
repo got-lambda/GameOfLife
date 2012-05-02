@@ -24,16 +24,24 @@
   (let [all-cells-to-test (into world (mapcat neighbour-coordinates world))]
     (set (filter #(evolve-single world %) all-cells-to-test))))
 
-(def world (atom #{[10 10][10 11][10 12]}))
+(defn get-random-world [nr-of-cells w h]
+  (set (take nr-of-cells (repeatedly (fn [] [(- (rand-int w) (/ w 2))
+					     (- (rand-int h) (/ h 2))])))))
+
+(def world (atom #{}))
 
 (defn setup []
-  (frame-rate 1))
+  (frame-rate 5)
+  (reset! world (get-random-world 1200 60 40)))
 
 (defn draw []
   (background 0)
   (fill 255)
-  (doseq [[x y] @world]
-    (rect (* x 10) (* y 10) 10 10))
+  (let [zoom (/ (mouse-x) 100)
+	x-pan (/ (width) 2)
+	y-pan (/ (height) 2)]
+    (doseq [[x y] @world]
+      (rect (+ (* x zoom) x-pan) (+ (* y zoom) y-pan) zoom zoom)))
   (swap! world evolve))
 
 (defsketch game-of-life                
