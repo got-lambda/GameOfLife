@@ -3,21 +3,18 @@
   (:gen-class))
 
 (defn neighbour-coordinates [[x y]]
-  (set (for [i [-1 0 1] j [-1 0 1] :when (not (= 0 i j))]
-	 [(+ x i) (+ y j)])))
-
-(defn alive? [world [x y]]
-  (world [x y]))
+  (for [i [-1 0 1] j [-1 0 1] :when (not (= 0 i j))]
+    [(+ x i) (+ y j)]))
 
 (defn count-neighbours
-  [world [x y]]
-  (let [coords (neighbour-coordinates [x y])]
+  [world pos]
+  (let [coords (neighbour-coordinates pos)]
     (count (filter world coords))))
 
-(defn evolve-single [world [x y]]
-  (let [c (count-neighbours world [x y])]
-    (cond (and (= 2 c) (world [x y])) [x y] ; has two neighbours and exists in the world
-	  (= 3 c) [x y]
+(defn evolve-single [world pos]
+  (let [c (count-neighbours world pos)]
+    (cond (and (= 2 c) (world pos)) pos ; has two neighbours and exists in the world
+	  (= 3 c) pos
 	  :else nil)))
 
 (defn evolve [world]
@@ -32,7 +29,7 @@
 
 (defn setup []
   (frame-rate 5)
-  (reset! world (get-random-world 1200 60 40)))
+  (reset! world (get-random-world 50000 500 500)))
 
 (defn draw []
   (background 0)
@@ -44,11 +41,10 @@
       (rect (+ (* x zoom) x-pan) (+ (* y zoom) y-pan) zoom zoom)))
   (swap! world evolve))
 
-(defsketch game-of-life                
-	:title "Game of Life"
-	:setup setup
-	:draw draw         
-	:size [600 400])
-
 (defn -main []
+  (defsketch game-of-life
+    :title "Game of Life"
+    :setup setup
+    :draw draw
+    :size [600 400])
   (println "Starting..."))
